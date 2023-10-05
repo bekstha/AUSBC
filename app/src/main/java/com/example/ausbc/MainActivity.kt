@@ -3,6 +3,7 @@ package com.example.ausbc
 import android.Manifest.permission.CAMERA
 import android.Manifest.permission.RECORD_AUDIO
 import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.hardware.usb.UsbDevice
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -23,11 +24,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        replaceDemoFragment(DemoFragment())
+        binding.btn.setOnClickListener {
+            replaceDemoFragment(DemoFragment())
+        }
     }
 
     private fun replaceDemoFragment(fragment: Fragment) {
-        val hasCameraPermission = PermissionChecker.checkSelfPermission(this, CAMERA)
+/*        val hasCameraPermission = PermissionChecker.checkSelfPermission(this, CAMERA)
         val hasStoragePermission =
             PermissionChecker.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
         if (hasCameraPermission != PermissionChecker.PERMISSION_GRANTED || hasStoragePermission != PermissionChecker.PERMISSION_GRANTED) {
@@ -40,10 +43,10 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CAMERA
             )
             return
-        }
+        }*/
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frameLayout, fragment)
-        transaction.commit()
+        transaction.commitAllowingStateLoss()
     }
 
     override fun onRequestPermissionsResult(
@@ -71,10 +74,15 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
                 // todo
+
             }
             else -> {
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     companion object {
